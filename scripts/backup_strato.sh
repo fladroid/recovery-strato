@@ -21,7 +21,7 @@ GDRIVE_DEST="${GDRIVE_REMOTE}:${GDRIVE_BASE}/${DATE}"
 SPLIT_SIZE="2G"
 RETENTION_DAYS=3
 RCLONE="/usr/bin/rclone"
-RCLONE_CONFIG="/root/.config/rclone/rclone.conf"
+RCLONE_CONFIG="/home/balsam/recovery/rclone.conf"
 NTFY_URL="https://ntfy-balsam.dynu.net/balsam-flavio-minitor"
 NTFY_TOKEN="tk_hegwsgk6f03v1cgaauzc4z76xuicw"
 
