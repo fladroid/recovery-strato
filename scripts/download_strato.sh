@@ -3,9 +3,9 @@
 # download_strato.sh
 # Skida backup sa GDrive na lokalni disk i spaja part- fajlove
 # Autor: Flavio & Claude | Projekt Katalog
-# Verzija: 1.0 | 2026-04-13
+# Verzija: 1.1 | 2026-04-24 (paths: /root -> /home/balsam; rclone config uskladjen)
 #
-# Upotreba: bash /root/recovery/scripts/download_strato.sh [YYYY-MM-DD]
+# Upotreba: bash /home/balsam/recovery/scripts/download_strato.sh [YYYY-MM-DD]
 # Bez datuma — skida najnoviji backup
 # =============================================================================
 
@@ -14,11 +14,11 @@ set -euo pipefail
 GDRIVE_REMOTE="gdrive"
 GDRIVE_BASE="backup_balsam"
 RCLONE="/usr/bin/rclone"
-RCLONE_CONFIG="/root/.config/rclone/rclone.conf"
-RESTORE_DIR="/root/recovery/restore"
-LOG_FILE="/root/recovery/logs/download_$(date +%Y-%m-%d_%H-%M).log"
+RCLONE_CONFIG="/home/balsam/recovery/rclone.conf"
+RESTORE_DIR="/home/balsam/recovery/restore"
+LOG_FILE="/home/balsam/recovery/logs/download_$(date +%Y-%m-%d_%H-%M).log"
 
-mkdir -p "$RESTORE_DIR" "/root/recovery/logs"
+mkdir -p "$RESTORE_DIR" "/home/balsam/recovery/logs"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
@@ -77,7 +77,7 @@ log "Sadržaj restore direktorija:"
 ls -lh "${DEST}/"
 log "========================================================"
 log "--- DOWNLOAD ZAVRŠEN ---"
-log "Sljedeći korak: bash /root/recovery/scripts/recover_strato.sh ${BACKUP_DATE}"
+log "Sljedeći korak: bash /home/balsam/recovery/scripts/recover_strato.sh ${BACKUP_DATE}"
 log "========================================================"
 
 exit 0

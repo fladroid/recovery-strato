@@ -3,15 +3,15 @@
 # backup_strato.sh
 # Backup Strato servera (Balsam VPS) na Google Drive
 # Autor: Flavio & Claude | Projekt Katalog
-# Verzija: 2.2 | 2026-04-13
-# Cron (root): 0 3 * * * /bin/bash /root/recovery/scripts/backup_strato.sh
+# Verzija: 2.3 | 2026-04-24 (RECOVERY_DIR ispravljen: /root -> /home/balsam)
+# Cron (root): 0 3 * * * /bin/bash /home/balsam/recovery/scripts/backup_strato.sh
 # =============================================================================
 
 set -euo pipefail
 
 DATE=$(date +%Y-%m-%d)
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
-RECOVERY_DIR="/root/recovery"
+RECOVERY_DIR="/home/balsam/recovery"
 LOG_FILE="$RECOVERY_DIR/logs/backup_$TIMESTAMP.log"
 CONFIGS_DIR="$RECOVERY_DIR/configs"
 TMP_DIR="/tmp/backup_strato_${DATE}"

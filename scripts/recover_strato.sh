@@ -3,10 +3,10 @@
 # recover_strato.sh
 # Restore svega sa lokalnih tar arhiva na pravo mjesto
 # Autor: Flavio & Claude | Projekt Katalog
-# Verzija: 1.0 | 2026-04-13
+# Verzija: 1.1 | 2026-04-24 (paths: /root -> /home/balsam)
 #
-# Upotreba: bash /root/recovery/scripts/recover_strato.sh [YYYY-MM-DD]
-# Bez datuma — koristi najnoviji u /root/recovery/restore/
+# Upotreba: bash /home/balsam/recovery/scripts/recover_strato.sh [YYYY-MM-DD]
+# Bez datuma — koristi najnoviji u /home/balsam/recovery/restore/
 #
 # ⚠️  UPOZORENJE: Ova skripta je destruktivna — prepisuje postojeće fajlove!
 #     Pokreći samo na svježoj instalaciji ili kad si siguran šta radiš.
@@ -14,10 +14,10 @@
 
 set -euo pipefail
 
-RESTORE_DIR="/root/recovery/restore"
-LOG_FILE="/root/recovery/logs/recover_$(date +%Y-%m-%d_%H-%M).log"
+RESTORE_DIR="/home/balsam/recovery/restore"
+LOG_FILE="/home/balsam/recovery/logs/recover_$(date +%Y-%m-%d_%H-%M).log"
 
-mkdir -p "/root/recovery/logs"
+mkdir -p "/home/balsam/recovery/logs"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
@@ -105,7 +105,11 @@ if [ -f "${SRC}/sysinfo.tar.gz" ]; then
     log "Sysinfo arhiva pronađena — raspakujem u /tmp/sysinfo_restore/ za ručnu provjeru"
     mkdir -p /tmp/sysinfo_restore
     tar -xzf "${SRC}/sysinfo.tar.gz" -C /tmp/sysinfo_restore/ 2>/dev/null || true
-    log "Sysinfo fajlovi: $(ls /tmp/sysinfo_restore/root/recovery/configs/ 2>/dev/null || ls /tmp/sysinfo_restore/ 2>/dev/null)"
+    # Stare arhive (<v2.3) imaju strukturu root/recovery/configs/; novije home/balsam/recovery/configs/
+    SYSINFO_FILES=$(ls /tmp/sysinfo_restore/home/balsam/recovery/configs/ 2>/dev/null \
+                 || ls /tmp/sysinfo_restore/root/recovery/configs/ 2>/dev/null \
+                 || find /tmp/sysinfo_restore -type f 2>/dev/null)
+    log "Sysinfo fajlovi: ${SYSINFO_FILES}"
     log "Korisnici/grupe se NE restore-uju automatski — provjeri ručno u /tmp/sysinfo_restore/"
 fi
 
