@@ -19,7 +19,7 @@ GDRIVE_REMOTE="gdrive"
 GDRIVE_BASE="backup_balsam"
 GDRIVE_DEST="${GDRIVE_REMOTE}:${GDRIVE_BASE}/${DATE}"
 SPLIT_SIZE="2G"
-RETENTION_DAYS=3
+KEEP_BACKUPS=4
 RCLONE="/usr/bin/rclone"
 RCLONE_CONFIG="/home/balsam/recovery/rclone.conf"
 NTFY_URL="https://ntfy-balsam.dynu.net/balsam-flavio-minitor"
@@ -180,16 +180,13 @@ if [ "${GDRIVE_COUNT}" -lt "${FILE_COUNT}" ]; then
     exit 1
 fi
 
-# Retention
-log "Retention: brišem backup-e starije od ${RETENTION_DAYS} dana..."
-CUTOFF_DATE=$(date -d "${RETENTION_DAYS} days ago" +%Y-%m-%d)
+# Retention — čuva zadnjih KEEP_BACKUPS foldera, briše ostale
+log "Retention: čuvam zadnjih ${KEEP_BACKUPS} backupa na GDrive..."
 "${RCLONE}" --config "${RCLONE_CONFIG}" lsd "${GDRIVE_REMOTE}:${GDRIVE_BASE}/" 2>/dev/null | \
-    awk '{print $NF}' | \
+    awk '{print $NF}' | sort -r | tail -n +$((KEEP_BACKUPS + 1)) | \
     while read -r folder; do
-        if [[ "$folder" < "$CUTOFF_DATE" ]]; then
-            log "Brišem stari backup: ${folder}"
-            "${RCLONE}" --config "${RCLONE_CONFIG}" purge "${GDRIVE_REMOTE}:${GDRIVE_BASE}/${folder}/" 2>&1
-        fi
+        log "Brišem stari backup: ${folder}"
+        "${RCLONE}" --config "${RCLONE_CONFIG}" purge "${GDRIVE_REMOTE}:${GDRIVE_BASE}/${folder}/" 2>&1
     done
 
 # Čišćenje lokalnih starih fajlova
